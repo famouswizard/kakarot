@@ -16,10 +16,6 @@ SHELL_CONFIG_FILES = {
     "fish": [".config/fish/config.fish"],
 }
 
-# Set up logging before using logger
-logging.basicConfig(level=logging.INFO, format="%(message)s")
-logger = logging.getLogger(__name__)
-
 
 class SetupError(Exception):
     """Custom exception for setup errors."""
@@ -115,7 +111,7 @@ def setup_local() -> None:
         logger.info("Installing asdf...")
         run_command(
             f"git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch {ASDF_VERSION}",
-            "Failed to install asdf"
+            "Failed to install asdf",
         )
         shell_config = get_shell_config_file()
         if shell_config:
@@ -127,7 +123,7 @@ def setup_local() -> None:
         else:
             logger.warning("Please add asdf to your shell configuration manually.")
     else:
-        logger.info("asdf is already installed.")
+        logger.info(f"asdf version {ASDF_VERSION} is already installed or a different version is in place.")
 
     run_command(
         "asdf plugin add scarb && asdf plugin add starknet-foundry || true",
@@ -159,6 +155,10 @@ def main() -> None:
         logger.error(f"❌ Error: {e}")
         sys.exit(1)
 
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, format="%(message)s")
+logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
     main()
